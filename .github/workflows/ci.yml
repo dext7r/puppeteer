@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    paths-ignore:
+      - 'bilibili/**'
+      - 'node_modules/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '30 22 * * *'
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout 🚀
+        uses: actions/checkout@master
+
+      - name: Setup PNPM 🚀
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 7.13.2
+
+      # - name: Cache node_modules 🚀
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: node_modules
+      #     key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/pnpm-lock.yaml')) }}
+
+      - name: Install Dependencies
+        #   if: steps.cache.outputs.cache-hit != 'true'
+        run: pnpm i
+
+      - name: task 🚀
+        run: pnpm task
+
+      - name: Commit files  🚀
+        run: |
+          git add bilibili
+          git config --local user.email "h7ml@qq.com"
+          git config advice.ignoredHook false
+          git config --local user.name "h7ml"
+          git commit --allow-empty -m ":rocket: Update today's hot rank on $(date)" -a
+
+      - name: Push changes  🚀
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: ${{ github.ref }}
