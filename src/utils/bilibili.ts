@@ -2,7 +2,7 @@
  * @Author: h7ml <h7ml@qq.com>
  * @Date: 2023-04-24 13:18:57
  * @LastEditors: h7ml <h7ml@qq.com>
- * @LastEditTime: 2023-04-25 11:27:02
+ * @LastEditTime: 2023-04-25 13:54:10
  * @FilePath: \puppeteer\src\utils\bilibili.ts
  * @Description:
  *
@@ -44,8 +44,8 @@ async function startCrawling() {
   // 调用 crawlFile API 爬取图片
   await bilibiliXCrawl.crawlFile({
     targets: [...urls],
-    // storeDir: `./bilibili/${getCurrentDate('/')}`,
-    storeDir,
+    storeDir: `./bilibili/${getCurrentDate('/')}`,
+    // storeDir,
   });
   // 关闭页面
   page.close();
